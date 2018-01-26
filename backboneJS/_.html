@@ -1,0 +1,77 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Underscore JS</title>
+    <script src="./underscore.js"></script>
+    <script type="text/javascript">
+
+      var myState = {
+        name: "Washington",
+        capital: "Olympia",
+        population: 7062000,
+        nickname: "The Evergreen State"
+      };
+      var businesses = [
+        {
+          name: "Coding Dojo",
+          city: "Bellevue"
+        },
+        {
+          name: "Facebook",
+          city: "Mountain View"
+        },
+        {
+          name: "Microsoft",
+          city: "Redmond"
+        },
+        {
+          name: "Expedia",
+          city: "Bellevue"
+        }
+      ];
+
+      // strip into two arrays
+      var myStateKeys = _.keys(myState)
+      var myStateValues = _.values(myState)
+      // console.log(myStateKeys+ '\n' +myStateValues);
+
+      // put arrays back together as objects
+      var obj = _.object(myStateKeys, myStateValues)
+      // console.log(obj);
+
+      // alert each of the key - value pairs of the mystate object
+      var alertMyState = _.each(myState, function(value, key){
+        // alert(key+': '+value);
+      });
+
+      // return just the names of the businesses from the businesses array
+      var bizNames = _.pluck(businesses, 'name');
+      // console.log(bizNames);
+
+      //  return the object containing microsoft 
+      var micro = _.findWhere(businesses, {name: 'Microsoft'});
+      // console.log(micro);
+
+      // return all businesses that are loated in Bellevue in a new array
+      var citiesIn = _.filter(businesses, function (business) { 
+          return business.city == 'Bellevue'; 
+        });
+        // console.log(citiesIn);
+
+      // sort the businesses based on the city in ascending order and return the array
+      var cityOrder = _.sortBy(businesses, 'name')
+      // console.log(cityOrder);
+
+      // all business names be "Coding Dojo" without altering the original array
+      _.map(businesses, function(business){
+          business.name = 'Coding Dojo';
+      });
+      console.log(businesses);
+      
+
+    </script>
+  </head>
+  <body>
+    
+  </body>
+</html>
