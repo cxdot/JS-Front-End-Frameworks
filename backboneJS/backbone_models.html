@@ -1,0 +1,32 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Backbone JS</title>
+    <script src="./underscore.js"></script>
+    <script src="./backbone.js"></script>
+    <script type="text/javascript">
+
+      var StackModel = Backbone.Model.extend({
+        defaults: {
+          title: null,
+          instructor: null,
+          language: null
+        },
+        initialize: function(instructor) {
+          this.set({
+            instructor: 'Michael Choi'
+          });
+        }
+      });
+
+      var meanStack = new StackModel({title: "MEAN", language: "Javascript"});
+      console.log(meanStack);
+      var pythonStack = new StackModel({title: "Python", language: "Python"})
+      console.log(pythonStack);
+      
+    </script>
+  </head>
+  <body>
+    
+  </body>
+</html>
