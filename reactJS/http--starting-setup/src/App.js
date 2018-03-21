@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import './App.css';
 import Blog from './containers/Blog/Blog';
+import { BrowserRouter } from 'react-router-dom';
 
 class App extends Component {
   render() {
     return (
-      <Blog />
+      <BrowserRouter>
+        <div>
+          <Blog />
+        </div>
+      </BrowserRouter>
     );
   }
 }

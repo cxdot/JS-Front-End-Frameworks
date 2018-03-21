@@ -1,62 +1,35 @@
 import React, { Component } from 'react';
 // import axios from 'axios';
-import axios from '../../axios';
+import { Route, NavLink, Switch, Redirect } from 'react-router-dom';
 
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
+import Posts from '../Posts/Posts';
+import asyncComponent from '../../hoc/asyncComponent';
+// import NewPost from '../NewPost/NewPost';
+
+const AsyncNewPost = asyncComponent(() => {
+    // dynamic import syntax which means whatever is in the paranthesis is only imported when the function is executed
+    return import('../NewPost/NewPost');
+});
 
 class Blog extends Component {
-    state = {
-        posts: [],
-        selectedPostId: null,
-        err: false
-    }
-
-    componentDidMount(){
-        axios.get('/posts')
-            .then(res => {
-                const posts = res.data.slice(0, 4);
-                const updatedPosts = posts.map(post => {
-                    return {
-                        ...post,
-                        author: 'Max'
-                    }
-                });
-                this.setState({posts: updatedPosts});
-                // console.log(res);
-            })
-            .catch(err => {
-                this.setState({err: true});
-            });
-    }
-
-    postSelectedHandler = (id) => {
-        this.setState({selectedPostId: id})
-    }
-
     render () {
-        let posts = <p style={{textAlign: 'center'}}>Something went wrong</p>
-
-        // if no error then override posts with array of Posts
-        if(!this.state.err){
-            posts = this.state.posts.map(post => {
-                return <Post key={post.id} title={post.title} author={post.author} clicked={() => this.postSelectedHandler(post.id)} />;
-            });
-        }
-        
         return (
-            <div>
-                <section className="Posts">
-                    {posts}
-                </section>
-                <section>
-                    <FullPost id={this.state.selectedPostId} />
-                </section>
-                <section>
-                    <NewPost />
-                </section>
+            <div className="Blog">
+                <header>
+                    <nav>
+                        <ul>
+                            <li><NavLink to="/posts/" exact activeClassName="active">Posts</NavLink></li>
+                            <li><NavLink to="/new-post">New Post</NavLink></li>
+                        </ul>
+                    </nav>
+                </header>
+                <Switch>
+                    <Route path="/new-post" component={AsyncNewPost} />
+                    <Route path="/posts" component={Posts} />
+                    <Redirect from="/" to="/posts" />
+                    {/* <Route path="/" component={Posts} /> */}
+                </Switch>
             </div>
         );
     }
