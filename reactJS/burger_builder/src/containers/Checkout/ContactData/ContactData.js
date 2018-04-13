@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Button from '../../../components/UI/Button/Button';
+import { connect } from 'react-redux';
 
+import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.css';
 import axios from '../../../axious-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
@@ -93,7 +94,33 @@ class ContactData extends Component {
         formIsValid: false,
         loading: false
     }
-
+    
+    
+    orderHandler = (event) => {
+        // prevent it from sending a request and reloading the page
+        event.preventDefault();
+        this.setState({loading: true});
+        const formData = {};
+        // formElementIdentifier = name, country, email, ect
+        for(let formElementIdentifier in this.state.orderForm){
+            // create key value pairs for properties and user inputs for submission
+            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+        }
+		const order = {
+			ingredients: this.props.ings,
+            price: this.props.price,
+            orderData: formData
+		}
+		axios.post('/orders.json', order)
+        .then(res => {
+                this.setState({ loading: false });
+                this.props.history.push('/');
+			})
+			.catch(err => {
+				this.setState({ loading: false });
+			});
+    }
+    
     checkValidity(value, rules) {
         let isValid = true;
         if(rules.required){
@@ -106,31 +133,6 @@ class ContactData extends Component {
             isValid = value.length <= rules.maxLength && isValid
         }
         return isValid;
-    }
-
-    orderHandler = (event) => {
-        // prevent it from sending a request and reloading the page
-        event.preventDefault();
-        this.setState({loading: true});
-        const formData = {};
-        // formElementIdentifier = name, country, email, ect
-        for(let formElementIdentifier in this.state.orderForm){
-            // create key value pairs for properties and user inputs for submission
-            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
-        }
-		const order = {
-			ingredients: this.props.ingredients,
-            price: this.props.price,
-            orderData: formData
-		}
-		axios.post('/orders.json', order)
-			.then(res => {
-                this.setState({ loading: false });
-                this.props.history.push('/');
-			})
-			.catch(err => {
-				this.setState({ loading: false });
-			});
     }
 
     // update the value for a given input upon user changes, immutably
@@ -157,7 +159,7 @@ class ContactData extends Component {
             formIsValid = updatedOrderForm[inputIndentifier].valid && formIsValid;
         }
         console.log(formIsValid);
-        this.setState({orderForm: updatedOrderForm});
+        this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid});
     }
 
     render(){
@@ -201,4 +203,11 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ings: state.ingredients,
+        price: state.totalPrice
+    }
+}
+
+export default connect(mapStateToProps)(ContactData);
